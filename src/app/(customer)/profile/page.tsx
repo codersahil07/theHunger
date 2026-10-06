@@ -33,10 +33,16 @@ export default function Profile() {
   });
 
   const router = useRouter();
-  const supabase = createClient();
+  const [supabase, setSupabase] = useState<ReturnType<typeof createClient> | null>(null);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setSupabase(createClient());
+  }, []);
 
   useEffect(() => {
     async function loadData() {
+      if (!supabase) return;
       const { data: { user } } = await supabase.auth.getUser();
       
       if (!user) {
@@ -126,6 +132,8 @@ export default function Profile() {
     setError("");
     setSuccess("");
 
+    if (!supabase) return;
+
     const { data: { user } } = await supabase.auth.getUser();
     
     if (!user) {
@@ -167,6 +175,7 @@ export default function Profile() {
   };
 
   const handleLogout = async () => {
+    if (!supabase) return;
     await supabase.auth.signOut();
     router.push("/login");
   };

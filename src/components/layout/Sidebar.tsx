@@ -27,6 +27,7 @@ export default function Sidebar({ isOpen, closeSidebar, isFullWidthPage = false 
 
   useEffect(() => {
     const client = createClient();
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setSupabase(client);
     client.auth.getUser().then(({ data }) => setUser(data.user));
     const { data: { subscription } } = client.auth.onAuthStateChange((_event, session) => {

@@ -24,6 +24,7 @@ export default function Header({ toggleSidebar }: { toggleSidebar: () => void })
 
   useEffect(() => {
     const client = createClient();
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setSupabase(client);
 
     client.auth.getUser().then(({ data }) => {

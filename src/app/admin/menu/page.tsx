@@ -37,6 +37,7 @@ export default function AdminMenu() {
   const [supabase, setSupabase] = useState<ReturnType<typeof createClient> | null>(null);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setSupabase(createClient());
   }, []);
 

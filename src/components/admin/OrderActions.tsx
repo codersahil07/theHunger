@@ -7,9 +7,15 @@ import { Check, Clock, Package, Truck, XCircle, MoreVertical } from "lucide-reac
 export default function OrderActions({ orderId, currentStatus }: { orderId: string, currentStatus: string }) {
   const [status, setStatus] = useState(currentStatus || 'pending');
   const [loading, setLoading] = useState(false);
-  const supabase = createClient();
+  const [supabase, setSupabase] = useState<ReturnType<typeof createClient> | null>(null);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setSupabase(createClient());
+  }, []);
 
   const handleUpdate = async (newStatus: string) => {
+    if (!supabase) return;
     setLoading(true);
     const { error } = await supabase
       .from('orders')

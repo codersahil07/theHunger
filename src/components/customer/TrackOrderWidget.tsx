@@ -19,16 +19,23 @@ export default function TrackOrderWidget() {
   const pathname = usePathname();
   const [notification, setNotification] = useState<{message: string, show: boolean}>({ message: '', show: false });
   const [prevStatus, setPrevStatus] = useState<string | null>(null);
-  const supabase = createClient();
+  const [supabase, setSupabase] = useState<ReturnType<typeof createClient> | null>(null);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setSupabase(createClient());
+  }, []);
+
+  useEffect(() => {
+    if (!supabase) return;
     fetchActiveOrder();
 
     const interval = setInterval(fetchActiveOrder, 2000); // Poll every 2s for fast demo
     return () => clearInterval(interval);
-  }, []);
+  }, [supabase]);
 
   const fetchActiveOrder = async () => {
+    if (!supabase) return;
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
       setLoading(false);
@@ -67,7 +74,7 @@ export default function TrackOrderWidget() {
   };
 
   const handleStatusAdvance = async (newStatus: string) => {
-    if (!order) return;
+    if (!order || !supabase) return;
     const { error } = await supabase
       .from('orders')
       .update({ status: newStatus })
