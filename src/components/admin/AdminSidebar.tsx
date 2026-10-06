@@ -13,9 +13,10 @@ export default function AdminSidebar() {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
-  const [supabase] = useState(() => createClient());
+  const [supabase, setSupabase] = useState<ReturnType<typeof createClient> | null>(null);
 
   const handleLogout = async () => {
+    if (!supabase) return;
     await supabase.auth.signOut();
     router.push("/login");
     router.refresh();
@@ -28,18 +29,21 @@ export default function AdminSidebar() {
   });
 
   useEffect(() => {
+    const client = createClient();
+    setSupabase(client);
+
     const fetchCounts = async () => {
-      const { count: ordersCount } = await supabase
+      const { count: ordersCount } = await client
         .from('orders')
         .select('*', { count: 'exact', head: true })
         .eq('status', 'pending');
 
-      const { count: resCount } = await supabase
+      const { count: resCount } = await client
         .from('reservations')
         .select('*', { count: 'exact', head: true })
         .eq('status', 'pending');
 
-      const { count: catCount } = await supabase
+      const { count: catCount } = await client
         .from('catering_requests')
         .select('*', { count: 'exact', head: true })
         .eq('status', 'pending');
@@ -54,7 +58,7 @@ export default function AdminSidebar() {
     fetchCounts();
     const interval = setInterval(fetchCounts, 10000); // Check every 10s
     return () => clearInterval(interval);
-  }, [supabase]);
+  }, []);
 
   const navItems = [
     { name: "Dashboard",    href: "/admin/dashboard",    icon: LayoutDashboard },

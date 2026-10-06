@@ -20,23 +20,27 @@ export default function Header({ toggleSidebar }: { toggleSidebar: () => void })
   const totalItems = useCartStore((state) => state.totalItems());
   const router = useRouter();
   const pathname = usePathname();
-  const [supabase] = useState(() => createClient());
+  const [supabase, setSupabase] = useState<ReturnType<typeof createClient> | null>(null);
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => {
+    const client = createClient();
+    setSupabase(client);
+
+    client.auth.getUser().then(({ data }) => {
       setUser(data.user);
     });
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    const { data: { subscription } } = client.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
     });
 
     return () => {
       subscription.unsubscribe();
     };
-  }, [supabase.auth]);
+  }, []);
 
   const handleLogout = async () => {
+    if (!supabase) return;
     await supabase.auth.signOut();
     router.push('/login');
     router.refresh();

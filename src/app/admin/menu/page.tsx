@@ -34,9 +34,14 @@ export default function AdminMenu() {
 
   const [categoryMap, setCategoryMap] = useState<Record<string, string>>({});
   const [categories, setCategories] = useState<{ id: string; name: string }[]>([]);
-  const [supabase] = useState(() => createClient());
+  const [supabase, setSupabase] = useState<ReturnType<typeof createClient> | null>(null);
+
+  useEffect(() => {
+    setSupabase(createClient());
+  }, []);
 
   const fetchData = async () => {
+    if (!supabase) return;
     setLoading(true);
     const { data: catData } = await supabase.from("menu_categories").select("id, name").order("display_order");
     if (catData) {
@@ -57,9 +62,9 @@ export default function AdminMenu() {
   };
 
   useEffect(() => {
-    fetchData();
+    if (supabase) fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [supabase]);
 
   const handleEdit = (item: any) => {
     setEditingItem(item);
@@ -97,6 +102,7 @@ export default function AdminMenu() {
   };
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!supabase) return;
     try {
       if (!e.target.files || e.target.files.length === 0) return;
       const file = e.target.files[0];
@@ -126,7 +132,7 @@ export default function AdminMenu() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (isSubmitting) return;
+    if (isSubmitting || !supabase) return;
     setIsSubmitting(true);
     const isMainCourse = Object.keys(categoryMap).find((key) => categoryMap[key] === formData.category_id) === "Main Course";
     const payload = {
@@ -160,7 +166,7 @@ export default function AdminMenu() {
   };
 
   const handleDelete = async () => {
-    if (!itemToDelete || isSubmitting) return;
+    if (!itemToDelete || isSubmitting || !supabase) return;
     setIsSubmitting(true);
     const { error } = await supabase.from("menu_items").delete().eq("id", itemToDelete.id);
     if (!error) setItems(items.filter((item) => item.id !== itemToDelete.id));
@@ -170,6 +176,7 @@ export default function AdminMenu() {
   };
 
   const toggleAvailability = async (id: string, current: boolean) => {
+    if (!supabase) return;
     setItems(items.map((item) => (item.id === id ? { ...item, is_available: !current } : item)));
     const { error } = await supabase.from("menu_items").update({ is_available: !current }).eq("id", id);
     if (error) setItems(items.map((item) => (item.id === id ? { ...item, is_available: current } : item)));
