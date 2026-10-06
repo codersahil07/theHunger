@@ -39,3 +39,16 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Environment variables
+.env.local
+.env
+
+# Temporary/debug scripts
+generate_sql.js
+scratch_fetch.js
+setup_settings.mjs
+test_insert*.mjs
+test_sql.sql
+test_urls.js
+update_images*.js
