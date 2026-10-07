@@ -1,4 +1,4 @@
 {
-  "reservationsEnabled": false,
+  "reservationsEnabled": true,
   "disabledMessage": "Bookings are currently paused due to high volume. Please check back later."
 }

@@ -61,16 +61,29 @@ export default function AdminReservations() {
   const toggleReservations = async () => {
     setSettingsLoading(true);
     const newSettings = { ...settings, reservationsEnabled: !settings.reservationsEnabled };
+    // Optimistic update
     setSettings(newSettings);
     
     try {
-      await fetch('/api/settings', {
+      const res = await fetch('/api/settings', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newSettings)
       });
+      const result = await res.json();
+      if (!result.success) {
+        // Rollback optimistic update on failure
+        console.error('Failed to save settings:', result.error);
+        setSettings(settings); // revert to old value
+        alert(`Failed to save settings: ${result.error}\n\nIf this says RLS_BLOCKED, add SUPABASE_SERVICE_ROLE_KEY to Vercel env vars and redeploy.`);
+      } else {
+        // Confirm by re-fetching from DB
+        await fetchSettings();
+      }
     } catch(err) {
       console.error("Failed to update settings", err);
+      setSettings(settings); // revert
+      alert('Network error saving settings. Please try again.');
     } finally {
       setSettingsLoading(false);
     }
