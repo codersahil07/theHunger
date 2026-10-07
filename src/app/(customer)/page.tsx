@@ -114,7 +114,7 @@ export default function Home() {
         {/* Hero Content */}
         <div className="swiggy-hero-content" style={{ marginTop: 0 }}>
           <h1 className="swiggy-headline" style={{ fontSize: '42px', fontWeight: 700 }}>
-            Welcome to <span style={{ color: 'var(--color-champagne-gold)' }}>The Hunger</span>.<br />
+            Welcome to <span style={{ color: 'var(--color-champagne-gold)', whiteSpace: 'nowrap' }}>The Hunger.</span><br />
             Experience culinary perfection.
           </h1>
 
