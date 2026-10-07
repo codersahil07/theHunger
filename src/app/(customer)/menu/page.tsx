@@ -243,17 +243,19 @@ return (
       </>
       )}
 
-      {/* Floating Menu Button */}
-      <div className="floating-menu-btn-container">
-        <button 
-          className="floating-menu-btn mobile-only" 
-          onClick={() => setShowCategoryPopup(true)}
-        >
-          <MenuIcon size={18} style={{ marginRight: '6px' }} />
-          MENU
-        </button>
-      </div>
     </div>
+    
+    {/* Floating Menu Button */}
+    <div className="mobile-only" style={{ position: 'fixed', right: '24px', bottom: '100px', zIndex: 1000 }}>
+      <button 
+        className="floating-menu-btn" 
+        onClick={() => setShowCategoryPopup(true)}
+        aria-label="Menu Categories"
+      >
+        <MenuIcon size={24} />
+      </button>
+    </div>
+
     {selectedItemForPortion && (
         <div className="portion-modal-overlay open" onClick={() => setSelectedItemForPortion(null)}>
           <div className="portion-modal" onClick={e => e.stopPropagation()}>

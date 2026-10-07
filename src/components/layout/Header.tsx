@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { Search, User, LogOut, Menu, ShoppingCart, LogIn } from "lucide-react";
+import { Search, User, LogOut, Menu, ShoppingCart } from "lucide-react";
 import { useCartStore, useCartUIStore } from "@/lib/store";
 import { useState, useEffect, useSyncExternalStore } from "react";
 import CartDrawer from "./CartDrawer";
@@ -85,6 +85,9 @@ export default function Header({ toggleSidebar }: { toggleSidebar: () => void })
           <div className="header-right">
             <Link href="/about" className={`header-link ${pathname === '/about' ? 'active' : ''}`}>About</Link>
             <Link href="/contact" className={`header-link ${pathname === '/contact' ? 'active' : ''}`}>Contact</Link>
+            <button className="header-icon-btn" aria-label="Cart" onClick={() => setCartOpen(true)}>
+              <ShoppingCart size={22} />
+            </button>
             {user ? (
               <>
                 <Link href="/profile" className="header-icon-btn" aria-label="User Profile">
@@ -95,8 +98,8 @@ export default function Header({ toggleSidebar }: { toggleSidebar: () => void })
                 </button>
               </>
             ) : (
-              <Link href="/login" className="header-icon-btn" aria-label="Login">
-                <LogIn size={22} />
+              <Link href="/login" className="header-icon-btn" aria-label="Login / Profile">
+                <User size={22} />
               </Link>
             )}
           </div>
@@ -105,7 +108,7 @@ export default function Header({ toggleSidebar }: { toggleSidebar: () => void })
 
         {pathname === '/menu' ? (
           <div className="mobile-header-bar mobile-only">
-            <div className="mobile-header-search" style={{ flex: 1, display: 'flex', alignItems: 'center', background: 'rgba(255,255,255,0.08)', borderRadius: '24px', padding: '8px 16px', border: '1px solid rgba(198,162,74,0.3)', width: '100%' }}>
+            <div className="mobile-header-search" style={{ flex: 1, display: 'flex', alignItems: 'center', padding: '2px 8px' }}>
               <Search size={18} color="var(--color-champagne-gold)" />
               <input 
                 type="text" 
@@ -117,6 +120,11 @@ export default function Header({ toggleSidebar }: { toggleSidebar: () => void })
                 }}
                 style={{ background: 'transparent', border: 'none', color: '#fff', marginLeft: '12px', flex: 1, outline: 'none', fontSize: '15px' }}
               />
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', marginLeft: '4px' }}>
+              <button className="mobile-hamburger-btn" onClick={toggleSidebar} aria-label="Open Menu">
+                <Menu size={24} color="#fff" />
+              </button>
             </div>
           </div>
         ) : (

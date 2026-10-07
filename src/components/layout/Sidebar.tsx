@@ -10,8 +10,7 @@ import {
   LayoutGrid, 
   Phone, 
   User,
-  LogOut,
-  LogIn
+  LogOut
 } from "lucide-react";
 import "./layout.css";
 import { useState, useEffect } from "react";
@@ -84,8 +83,8 @@ export default function Sidebar({ isOpen, closeSidebar, isFullWidthPage = false 
           </>
         ) : (
           <Link href="/login" className={`sidebar-link ${pathname === '/login' ? 'active' : ''}`} onClick={closeSidebar}>
-            <LogIn size={22} strokeWidth={1.5} />
-            <span>Login</span>
+            <User size={22} strokeWidth={1.5} />
+            <span>Login / Profile</span>
           </Link>
         )}
       </nav>

@@ -98,7 +98,7 @@
 .header-left {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: space-evenly;
   width: 100%;
 }
 
@@ -112,7 +112,7 @@
 .header-right {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: space-evenly;
   width: 100%;
 }
 
@@ -487,13 +487,15 @@
   .app-sidebar {
     position: fixed;
     top: 0;
-    left: 0;
+    right: 0;
+    left: auto;
     bottom: 0;
     z-index: 1000;
     margin: 0;
     border-radius: 0;
-    border-right: 1px solid rgba(198, 162, 74, 0.28);
-    transform: translateX(-100%);
+    border-left: 1px solid rgba(198, 162, 74, 0.28);
+    border-right: none;
+    transform: translateX(100%);
     transition: transform 0.3s ease;
     display: flex; /* Override display: none if any */
     overflow-y: auto;
