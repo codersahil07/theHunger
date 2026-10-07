@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { createClient } from "@/lib/supabase-browser";
 import { Clock, CheckCircle, Package, Truck, XCircle, ChevronDown, ChevronUp, ShoppingCart } from "lucide-react";
 import { useCartStore, useCartUIStore } from "@/lib/store";
@@ -26,15 +26,12 @@ export default function TrackOrderWidget() {
     setSupabase(createClient());
   }, []);
 
-  useEffect(() => {
-    if (!supabase) return;
-    fetchActiveOrder();
+  const showNotification = useCallback((msg: string) => {
+    setNotification({ message: msg, show: true });
+    setTimeout(() => setNotification({ message: '', show: false }), 4000);
+  }, []);
 
-    const interval = setInterval(fetchActiveOrder, 2000); // Poll every 2s for fast demo
-    return () => clearInterval(interval);
-  }, [supabase]);
-
-  const fetchActiveOrder = async () => {
+  const fetchActiveOrder = useCallback(async () => {
     if (!supabase) return;
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
@@ -66,12 +63,15 @@ export default function TrackOrderWidget() {
       setOrder(null);
     }
     setLoading(false);
-  };
+  }, [supabase, prevStatus, showNotification]);
 
-  const showNotification = (msg: string) => {
-    setNotification({ message: msg, show: true });
-    setTimeout(() => setNotification({ message: '', show: false }), 4000);
-  };
+  useEffect(() => {
+    if (!supabase) return;
+    fetchActiveOrder();
+
+    const interval = setInterval(fetchActiveOrder, 2000); // Poll every 2s for fast demo
+    return () => clearInterval(interval);
+  }, [supabase, fetchActiveOrder]);
 
   const handleStatusAdvance = async (newStatus: string) => {
     if (!order || !supabase) return;
