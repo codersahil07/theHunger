@@ -39,7 +39,7 @@ export default function Login() {
       if (error.message.includes("Invalid login credentials")) {
         setError("Invalid email or password. Please try again.");
       } else {
-        setError("An error occurred during sign in. Please try again later.");
+        setError(`Error: ${error.message}`);
       }
       setLoading(false);
     } else if (authData.user) {
